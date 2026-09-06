@@ -5,8 +5,8 @@
 //
 // Curated RAG: for each data structure we inject the matching course material
 // (assignment write-up, teaching notes) into the system prompt so answers stay
-// grounded in the actual course. Those files are NOT part of this repository —
-// see `course-context/README.md`. Without them Pawie still works and answers
+// grounded in the actual course. Those files are NOT part of this repository.
+// See `course-context/README.md`. Without them Pawie still works and answers
 // from general data-structures knowledge.
 //
 // Run:
@@ -35,7 +35,7 @@ if (!process.env.ANTHROPIC_API_KEY) {
 const client = new Anthropic(); // reads ANTHROPIC_API_KEY from the environment
 
 // Optional per-structure grounding material. Drop your own files into
-// course-context/<Structure>/ — e.g. course-context/ArrayList/writeup.md — and
+// course-context/<Structure>/ (e.g. course-context/ArrayList/writeup.md) and
 // they are injected into that structure's system prompt. Missing folders are
 // simply skipped.
 const MAX_CHARS = 7000; // cap each source so the context stays lean
@@ -53,7 +53,7 @@ async function loadContext(structure) {
       parts.push(`### Source: ${name}\n${text}`);
     }
   } catch {
-    /* no course-context/<structure> folder — fine, we fall back to general knowledge */
+    /* no course-context/<structure> folder: fall back to general knowledge */
   }
   const ctx = parts.join("\n\n---\n\n") || "(no course material supplied for this structure)";
   contextCache.set(structure, ctx);
@@ -66,7 +66,7 @@ function systemPrompt(structure, context) {
     `interactive data-structure visualizer for an introductory data structures course (Java). ` +
     `The student is currently looking at the ${structure} visualizer.\n\n` +
     `How to help:\n` +
-    `- Keep replies SHORT — 2–4 sentences, plain and encouraging. You are a quick companion, not a lecture.\n` +
+    `- Keep replies SHORT, 2 to 4 sentences, plain and encouraging. You are a quick companion, not a lecture.\n` +
     `- Be Socratic when it helps: nudge the student toward the idea instead of just stating it.\n` +
     `- Always tie answers to what they can see: indices, pointers, front/rear, capacity vs size, the Big-O cost.\n` +
     `- Ground your answers in the course context below. If the question is outside it, answer from general data-structures knowledge and say so briefly.\n` +
@@ -127,13 +127,13 @@ const server = createServer((req, res) => {
         .join("")
         .trim();
 
-      send(res, 200, { answer: answer || "Hmm, I went blank — try asking again?" });
+      send(res, 200, { answer: answer || "Hmm, I went blank. Try asking again?" });
     } catch (err) {
       console.error("tutor error:", err?.message || err);
       const status = err?.status && Number.isInteger(err.status) ? err.status : 500;
       const friendly =
-        status === 401 ? "Invalid ANTHROPIC_API_KEY — restart the server with a valid key."
-        : status === 429 ? "Rate limited — wait a moment and try again."
+        status === 401 ? "Invalid ANTHROPIC_API_KEY. Restart the server with a valid key."
+        : status === 429 ? "Rate limited. Wait a moment and try again."
         : err?.message || "Tutor request failed.";
       send(res, status, { error: friendly });
     }

@@ -2474,7 +2474,7 @@ function genCtorArr(tokens, isNull){
    the finished structure.
    ===================================================================== */
 const CTOR_HINT = {
-  array:'All three constructors set up the same two fields, <b>data</b> and <b>size</b> — they differ only in how. Pick one and press Construct.',
+  array:'All three constructors set up the same two fields, <b>data</b> and <b>size</b>. They differ only in how. Pick one and press Construct.',
   heap:'<b>new MyMinHeap()</b> starts empty; <b>new MyMinHeap(collection)</b> copies the values in, then heapifies them bottom-up.',
   linked:'The no-arg constructor builds the <b>head</b> and <b>tail</b> sentinels. Any values you list are then appended one by one with <b>add()</b>.',
   stack:'<b>new MyStack(capacity)</b> allocates a <b>MyDeque</b> of that capacity, then <b>push</b>es each listed value (addLast).',
@@ -2530,7 +2530,7 @@ function setupCtorChooser(){
   if(!defs.length) return;
   document.getElementById('ctorTabs').innerHTML =
     defs.map(d=>'<button class="ctortab" data-ctor="'+d.id+'">'+d.label+'</button>').join('');
-  // sensible default tab: show a populated example — the array/collection
+  // sensible default tab: show a populated example, the array/collection
   // constructor for ArrayList/Heap, otherwise the structure's first tab.
   const def = STRUCT==='array' ? 'ctorA' : (STRUCT==='heap' ? 'heapC' : defs[0].id);
   document.getElementById('ctorArr').value = CTOR_ARR_DEFAULT[ctorHintKey()] || '3, 1, 4';
@@ -3006,7 +3006,7 @@ const CX_QUEUE =
   '<tr id="bo-qpeek"><td class="opname">peek()</td><td class="bigo">O(1)</td><td class="why">Reads the front slot directly.</td></tr>'+
   '<tr id="bo-qempty"><td class="opname">empty()</td><td class="bigo">O(1)</td><td class="why">Reads the stored size field.</td></tr>'+
   '<tr id="bo-qsize"><td class="opname">size()</td><td class="bigo">O(1)</td><td class="why">Reads the stored size field.</td></tr>';
-const CXP_QUEUE = 'A <code>MyQueue</code> is a thin wrapper over a <code>MyDeque</code>. <b>enqueue</b> adds at the <b>back</b> (addLast) and <b>dequeue</b> / <b>peek</b> act at the <b>front</b> (removeFirst / peekFirst), so it is FIFO. Both <b>front</b> and <b>rear</b> advance and wrap around the circular array — this is where you see <b>front &gt; rear</b>. Each op is <code>O(1)</code>.<br><b>*amortized</b>: an <code>enqueue</code> is usually <code>O(1)</code>, but the rare resize that doubles a full array copies all <code>n</code> elements.';
+const CXP_QUEUE = 'A <code>MyQueue</code> is a thin wrapper over a <code>MyDeque</code>. <b>enqueue</b> adds at the <b>back</b> (addLast) and <b>dequeue</b> / <b>peek</b> act at the <b>front</b> (removeFirst / peekFirst), so it is FIFO. Both <b>front</b> and <b>rear</b> advance and wrap around the circular array. This is where you see <b>front &gt; rear</b>. Each op is <code>O(1)</code>.<br><b>*amortized</b>: an <code>enqueue</code> is usually <code>O(1)</code>, but the rare resize that doubles a full array copies all <code>n</code> elements.';
 
 /* ---- enqueue(value) = addLast(value): the back of the queue ---- */
 function genQueueEnqueue(value){
@@ -3214,7 +3214,7 @@ function escSvg(s){ return String(s).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt
 const PHASES_HEAP = {
   insert: [
     {id:'guard', t:'Reject null', d:'A min-heap cannot hold null, so insert rejects it before anything else.'},
-    {id:'place', t:'Add at the end', d:'Append the value as the right-most node of the bottom level — the next free array slot. The tree stays complete.'},
+    {id:'place', t:'Add at the end', d:'Append the value as the right-most node of the bottom level, the next free array slot. The tree stays complete.'},
     {id:'up',    t:'Percolate up', d:'Compare the new node with its parent. While it is smaller than its parent, swap them so it bubbles toward the root. Equal stops, since parent ≤ child is already satisfied.'},
     {id:'done',  t:'Heap restored', d:'No parent is greater than its child, so the heap property holds again.'},
   ],
@@ -3242,10 +3242,10 @@ const PHASE_TITLES_HEAP = {insert:'How insert(e) works', removeMin:'How removeMi
 const CX_HEAP =
   '<tr id="bo-hpinsert"><td class="opname">insert(e)</td><td class="bigo">O(log n)</td><td class="why">Append, then percolate up at most the tree height.</td></tr>'+
   '<tr id="bo-hpremove"><td class="opname">removeMin()</td><td class="bigo">O(log n)</td><td class="why">Swap in the last node, then percolate down the height.</td></tr>'+
-  '<tr id="bo-hppeek"><td class="opname">getMin()</td><td class="bigo">O(1)</td><td class="why">The root is always the minimum — read index 0.</td></tr>'+
+  '<tr id="bo-hppeek"><td class="opname">getMin()</td><td class="bigo">O(1)</td><td class="why">The root is always the minimum, so read index 0.</td></tr>'+
   '<tr id="bo-hpsize"><td class="opname">size()</td><td class="bigo">O(1)</td><td class="why">Reads the stored array length.</td></tr>'+
   '<tr id="bo-hpclear"><td class="opname">clear()</td><td class="bigo">O(n)</td><td class="why">Drops all n elements.</td></tr>';
-const CXP_HEAP = 'A <code>MyMinHeap</code> stores a complete binary tree inside a <code>0-indexed ArrayList</code>: node <code>i</code>’s children are <code>2i+1</code> and <code>2i+2</code>, its parent is <code>(i−1)/2</code>. The <b>heap property</b> — every parent ≤ its children — keeps the minimum at the root. <code>insert</code> and <code>removeMin</code> restore that property by percolating one node along a single root-to-leaf path, so each costs <code>O(log n)</code>. A <code>MyPriorityQueue</code> is just this heap with friendlier names: <b>push</b> = insert, <b>peek</b> = getMin, <b>pop</b> = removeMin.';
+const CXP_HEAP = 'A <code>MyMinHeap</code> stores a complete binary tree inside a <code>0-indexed ArrayList</code>: node <code>i</code>’s children are <code>2i+1</code> and <code>2i+2</code>, its parent is <code>(i−1)/2</code>. The <b>heap property</b> (every parent ≤ its children) keeps the minimum at the root. <code>insert</code> and <code>removeMin</code> restore that property by percolating one node along a single root-to-leaf path, so each costs <code>O(log n)</code>. A <code>MyPriorityQueue</code> is just this heap with friendlier names: <b>push</b> = insert, <b>peek</b> = getMin, <b>pop</b> = removeMin.';
 
 /* ---- BST concept text: phases, complexity table, primer ---- */
 const PHASES_TREE = {
@@ -3267,9 +3267,9 @@ const PHASES_TREE = {
     {id:'find',   t:'Find the node', d:'Walk down comparing keys, exactly like search, remembering the parent on the way.'},
     {id:'miss',   t:'Not found', d:'If the walk falls off the tree, the key was never there, so return null.'},
     {id:'target', t:'Which case?', d:'A found node falls into one of three cases by how many children it has: zero, one, or two.'},
-    {id:'leaf',   t:'Leaf (no children)', d:'Just detach the node from its parent — the simplest case.'},
+    {id:'leaf',   t:'Leaf (no children)', d:'Just detach the node from its parent, the simplest case.'},
     {id:'one',    t:'One child', d:'Splice the single child up into the node’s place, so its parent now points straight at the grandchild.'},
-    {id:'two',    t:'Two children', d:'Cannot just splice. Instead borrow the in-order successor — the smallest key in the right subtree — to fill the gap.'},
+    {id:'two',    t:'Two children', d:'Cannot just splice. Instead borrow the in-order successor (the smallest key in the right subtree) to fill the gap.'},
     {id:'succ',   t:'Find the successor', d:'From the node’s right child, walk all the way left. That leftmost node is the next-largest key.'},
     {id:'copy',   t:'Copy the key up', d:'Overwrite the target’s key with the successor’s key. The ordering still holds, and the duplicate now sits lower down.'},
     {id:'splice', t:'Delete the successor', d:'The successor has no left child, so remove it with the easy leaf / one-child splice.'},
@@ -3286,7 +3286,7 @@ const CX_TREE =
   '<tr id="bo-tremove"><td class="opname">remove(k)</td><td class="bigo">O(h)</td><td class="why">Find the node, then splice (or borrow a successor).</td></tr>'+
   '<tr id="bo-tsize"><td class="opname">size()</td><td class="bigo">O(1)</td><td class="why">Reads a stored node counter.</td></tr>'+
   '<tr id="bo-tclear"><td class="opname">clear()</td><td class="bigo">O(1)</td><td class="why">Nulls the root; nodes become garbage.</td></tr>';
-const CXP_TREE = 'A <code>MyBST&lt;K,V&gt;</code> is a linked <b>binary search tree</b>: each node holds a key and points to a <b>left</b> and <b>right</b> child. The <b>BST property</b> — every key in a node’s left subtree is smaller, every key in its right subtree is larger — means a single comparison at each node tells you which way to go. So <code>insert</code>, <code>search</code> and <code>remove</code> each follow <b>one root-to-leaf path</b> and cost <code>O(h)</code>, where <code>h</code> is the tree height: <code>O(log n)</code> when the tree stays balanced, but <code>O(n)</code> if keys arrive in sorted order and the tree degenerates into a chain. <code>remove</code> has three cases — a <b>leaf</b> is detached, a node with <b>one child</b> is spliced out, and a node with <b>two children</b> borrows its in-order <b>successor</b> (the leftmost node of its right subtree) to fill the gap.';
+const CXP_TREE = 'A <code>MyBST&lt;K,V&gt;</code> is a linked <b>binary search tree</b>: each node holds a key and points to a <b>left</b> and <b>right</b> child. The <b>BST property</b> (every key in a node’s left subtree is smaller, every key in its right subtree is larger) means a single comparison at each node tells you which way to go. So <code>insert</code>, <code>search</code> and <code>remove</code> each follow <b>one root-to-leaf path</b> and cost <code>O(h)</code>, where <code>h</code> is the tree height: <code>O(log n)</code> when the tree stays balanced, but <code>O(n)</code> if keys arrive in sorted order and the tree degenerates into a chain. <code>remove</code> has three cases: a <b>leaf</b> is detached, a node with <b>one child</b> is spliced out, and a node with <b>two children</b> borrows its in-order <b>successor</b> (the leftmost node of its right subtree) to fill the gap.';
 
 /* ---- frame builder for the heap ---- */
 function newHeap(start){
@@ -3318,7 +3318,7 @@ function genHeapInsert(value){
   g.data.push(value);
   let i = g.data.length - 1;
   g.snap({phase:'place', active:[i], fresh:i,
-    say:'Append <b>'+fmt(value)+'</b> as the right-most node of the bottom level — array slot <b>'+i+'</b>. The tree is still complete.'});
+    say:'Append <b>'+fmt(value)+'</b> as the right-most node of the bottom level, array slot <b>'+i+'</b>. The tree is still complete.'});
   if(i === 0){
     g.snap({phase:'done', fresh:i, say:'It is the only node, so it is already the root. The heap property holds.'});
   }
@@ -3328,8 +3328,8 @@ function genHeapInsert(value){
     const c = heapCmp(g.data[p], g.data[i]);
     g.snap({phase:'up', compare:[p,i], fresh:i, lit:'C',
       say:'Compare with the parent at slot '+p+': <b>'+fmt(g.data[p])+'</b> vs <b>'+fmt(g.data[i])+'</b> → '+
-          (c > 0 ? 'parent is <b>greater</b>, so the heap property is violated — swap.'
-                 : 'parent is <b>not greater</b>, so the heap property holds — stop.')});
+          (c > 0 ? 'parent is <b>greater</b>, so the heap property is violated, so swap.'
+                 : 'parent is <b>not greater</b>, so the heap property holds, so stop.')});
     if(c > 0){
       const child = i;          // the slot the value is leaving
       const tmp = g.data[p]; g.data[p] = g.data[i]; g.data[i] = tmp; g.cost.swaps++;
@@ -3340,7 +3340,7 @@ function genHeapInsert(value){
         g.snap({phase:'done', fresh:i, say:'<b>'+fmt(value)+'</b> reached the root. The heap property holds again.'});
       }
     } else {
-      g.snap({phase:'done', fresh:i, say:'No more violations — <b>'+fmt(value)+'</b> settles at slot '+i+'.'});
+      g.snap({phase:'done', fresh:i, say:'No more violations. <b>'+fmt(value)+'</b> settles at slot '+i+'.'});
       break;
     }
   }
@@ -3383,14 +3383,14 @@ function genHeapRemoveMin(){
     const c = heapCmp(g.data[m], g.data[i]);
     g.snap({phase:'down', compare:[i, m], lit:'C',
       say:'Compare with the smaller child at slot '+m+': <b>'+fmt(g.data[i])+'</b> vs <b>'+fmt(g.data[m])+'</b> → '+
-          (c < 0 ? 'child is <b>smaller</b>, so the heap property is violated — swap.'
-                 : 'child is <b>not smaller</b>, so the heap property holds — stop.')});
+          (c < 0 ? 'child is <b>smaller</b>, so the heap property is violated, so swap.'
+                 : 'child is <b>not smaller</b>, so the heap property holds, so stop.')});
     if(c < 0){
       const tmp = g.data[m]; g.data[m] = g.data[i]; g.data[i] = tmp; g.cost.swaps++;
       g.snap({phase:'down', active:[i, m], lit:'S', say:'Swap them. <b>'+fmt(last)+'</b> sinks to slot '+m+'.'});
       i = m;
     } else {
-      g.snap({phase:'down', active:[i], say:'No more violations — <b>'+fmt(last)+'</b> settles at slot '+i+'.'});
+      g.snap({phase:'down', active:[i], say:'No more violations. <b>'+fmt(last)+'</b> settles at slot '+i+'.'});
       break;
     }
   }
@@ -3514,15 +3514,15 @@ function renderHeap(f){
   document.getElementById('bSize').textContent = 'size = ' + n;
 }
 
-/* ---- constructor: new MyMinHeap() — an empty heap ---- */
+/* ---- constructor: new MyMinHeap() makes an empty heap ---- */
 function genHeapEmptyBuild(){
   const g = newHeap({data:[]});
   g.snap({phase:'copy', say:'<b>new MyMinHeap()</b>: initialize <b>data</b> to an empty ArrayList. size = 0.'});
-  g.snap({phase:'done', say:'An empty heap is trivially valid — there is nothing to order yet.'});
+  g.snap({phase:'done', say:'An empty heap is trivially valid: there is nothing to order yet.'});
   return {frames:g.frames, final:g.final(), code:'ctor', row:null, label:'new MyMinHeap()',
     bigO:'The no-arg constructor allocates an empty list. <code>O(1)</code>.'};
 }
-/* ---- constructor: new MyMinHeap(collection) — copy the collection into
+/* ---- constructor: new MyMinHeap(collection) copies the collection into
    the backing ArrayList, then percolate each node down from the last index to
    the root (bottom-up heapify). null in the collection throws. ---- */
 function genHeapBuild(tokens){
@@ -3559,7 +3559,7 @@ function genHeapBuild(tokens){
       const c = heapCmp(g.data[m], g.data[j]);
       g.snap({phase:'heapify', compare:[j, m], lit:'C',
         say:'Compare slot '+j+' with its smaller child '+m+': <b>'+fmt(g.data[j])+'</b> vs <b>'+fmt(g.data[m])+'</b> → '+
-            (c < 0 ? 'child is smaller — swap.' : 'child is not smaller — stop.')});
+            (c < 0 ? 'child is smaller, so swap.' : 'child is not smaller, so stop.')});
       if(c < 0){
         const t = g.data[m]; g.data[m] = g.data[j]; g.data[j] = t; g.cost.swaps++;
         g.snap({phase:'heapify', active:[j, m], lit:'S', say:'Swap slots '+j+' and '+m+'.'});
@@ -3570,14 +3570,14 @@ function genHeapBuild(tokens){
   g.snap({phase:'done',
     say:'Every parent is now ≤ its children. The minimum, <b>'+fmt(g.data[0])+'</b>, is at the root (slot 0).'});
   return {frames:g.frames, final:g.final(), code:'ctor', row:null, label,
-    bigO:'Bottom-up heapify is <code>O(n)</code> — most nodes sit near the bottom and barely move, beating n separate inserts (<code>O(n log n)</code>). Used <b>'+g.cost.compares+'</b> comparison(s), <b>'+g.cost.swaps+'</b> swap(s).'};
+    bigO:'Bottom-up heapify is <code>O(n)</code>: most nodes sit near the bottom and barely move, beating n separate inserts (<code>O(n log n)</code>). Used <b>'+g.cost.compares+'</b> comparison(s), <b>'+g.cost.swaps+'</b> swap(s).'};
 }
 
 /* =====================================================================
    BINARY SEARCH TREE (MyBST). A linked tree of nodes, each holding a
-   key with left/right child references. The BST property — every key in a
-   node's left subtree is smaller, every key in its right subtree is larger
-   — lets insert, search and remove each follow a single root-to-leaf path,
+   key with left/right child references. The BST property (every key in a
+   node's left subtree is smaller, every key in its right subtree is larger)
+   lets insert, search and remove each follow a single root-to-leaf path,
    so each is O(h) where h is the tree height. remove handles the three
    classic cases (leaf, one child, two children via the in-order successor).
    Keys are unique; a duplicate insert overwrites in a real MyBST<K,V> but
@@ -3611,7 +3611,7 @@ function newTree(start){
 }
 function newBSTNode(key){ return {id:bstIdSeq++, key, left:null, right:null}; }
 
-const BST_BIGO_TAIL = ' The path length is the tree height h, so it is <code>O(h)</code> — <code>O(log n)</code> when the tree is balanced, but <code>O(n)</code> for a degenerate chain.';
+const BST_BIGO_TAIL = ' The path length is the tree height h, so it is <code>O(h)</code>, which is <code>O(log n)</code> when the tree is balanced, but <code>O(n)</code> for a degenerate chain.';
 
 /* ---- insert(k): walk down comparing, link a new leaf ---- */
 function genTreeInsert(key){
@@ -3626,7 +3626,7 @@ function genTreeInsert(key){
     g.root = newBSTNode(key); g.cost.links++;
     g.snap({phase:'place', active:[g.root.id], fresh:g.root.id, lit:'L',
       say:'The tree was empty, so <b>'+fmt(key)+'</b> becomes the <b>root</b>.'});
-    g.snap({phase:'done', fresh:g.root.id, say:'Done — the tree now holds one node.'});
+    g.snap({phase:'done', fresh:g.root.id, say:'Done. The tree now holds one node.'});
     return {frames:g.frames, final:g.final(), code:'insert', row:'bo-tinsert', label,
       bigO:'The tree was empty, so insert just creates the root. <code>O(1)</code> this time, <code>O(h)</code> in general.'};
   }
@@ -3636,7 +3636,7 @@ function genTreeInsert(key){
     const c = heapCmp(key, curr.key);
     g.snap({phase:'walk', compare:[curr.id], lit:'C',
       say:'Compare <b>'+fmt(key)+'</b> with node <b>'+fmt(curr.key)+'</b> → '+
-        (c===0 ? 'they are <b>equal</b> — the key is already here.'
+        (c===0 ? 'they are <b>equal</b>, so the key is already here.'
                : (c<0 ? 'it is <b>smaller</b>, so go <b>left</b>.'
                       : 'it is <b>larger</b>, so go <b>right</b>.'))});
     if(c===0){
@@ -3648,7 +3648,7 @@ function genTreeInsert(key){
         const node = newBSTNode(key); curr.right = node; g.cost.links++;
         g.snap({phase:'place', active:[curr.id, node.id], fresh:node.id, lit:'L',
           say:'<b>'+fmt(curr.key)+'</b> has no right child, so attach <b>'+fmt(key)+'</b> there as a new <b>right</b> leaf.'});
-        g.snap({phase:'done', fresh:node.id, say:'Done — <b>'+fmt(key)+'</b> is in place, and the BST property still holds.'});
+        g.snap({phase:'done', fresh:node.id, say:'Done. <b>'+fmt(key)+'</b> is in place, and the BST property still holds.'});
         break;
       }
       curr = curr.right;
@@ -3657,7 +3657,7 @@ function genTreeInsert(key){
         const node = newBSTNode(key); curr.left = node; g.cost.links++;
         g.snap({phase:'place', active:[curr.id, node.id], fresh:node.id, lit:'L',
           say:'<b>'+fmt(curr.key)+'</b> has no left child, so attach <b>'+fmt(key)+'</b> there as a new <b>left</b> leaf.'});
-        g.snap({phase:'done', fresh:node.id, say:'Done — <b>'+fmt(key)+'</b> is in place, and the BST property still holds.'});
+        g.snap({phase:'done', fresh:node.id, say:'Done. <b>'+fmt(key)+'</b> is in place, and the BST property still holds.'});
         break;
       }
       curr = curr.left;
@@ -3687,7 +3687,7 @@ function genTreeSearch(key){
     const c = heapCmp(key, curr.key);
     g.snap({phase:'walk', compare:[curr.id], lit:'C',
       say:'Compare <b>'+fmt(key)+'</b> with <b>'+fmt(curr.key)+'</b> → '+
-        (c===0 ? 'a <b>match</b> — found it!'
+        (c===0 ? 'a <b>match</b>, found it!'
                : (c<0 ? 'it is <b>smaller</b>, so go <b>left</b>.'
                       : 'it is <b>larger</b>, so go <b>right</b>.'))});
     if(c===0){
@@ -3723,7 +3723,7 @@ function genTreeRemove(key){
     const c = heapCmp(key, curr.key);
     g.snap({phase:'find', compare:[curr.id], lit:'C',
       say:'Compare <b>'+fmt(key)+'</b> with <b>'+fmt(curr.key)+'</b> → '+
-        (c===0 ? 'a <b>match</b> — this is the node to remove.'
+        (c===0 ? 'a <b>match</b>. This is the node to remove.'
                : (c<0 ? 'it is <b>smaller</b>, so go <b>left</b>.'
                       : 'it is <b>larger</b>, so go <b>right</b>.'))});
     if(c===0) break;
@@ -3741,16 +3741,16 @@ function genTreeRemove(key){
     else if(par.left===oldNode) par.left = repl;
     else par.right = repl;
   }
-  g.snap({phase:'target', active:[curr.id], say:'Found <b>'+fmt(key)+'</b>. Remove it while keeping the tree ordered — which of the three cases applies?'});
+  g.snap({phase:'target', active:[curr.id], say:'Found <b>'+fmt(key)+'</b>. Remove it while keeping the tree ordered. Which of the three cases applies?'});
 
   if(curr.left!==null && curr.right!==null){
     g.snap({phase:'two', active:[curr.id],
-      say:'<b>'+fmt(curr.key)+'</b> has <b>two children</b>. Replace its key with the in-order <b>successor</b> — the smallest key in its right subtree — then delete that successor instead.'});
+      say:'<b>'+fmt(curr.key)+'</b> has <b>two children</b>. Replace its key with the in-order <b>successor</b> (the smallest key in its right subtree), then delete that successor instead.'});
     let sParent = curr, succ = curr.right;
     g.snap({phase:'succ', compare:[succ.id], say:'Step into the right subtree, starting at <b>'+fmt(succ.key)+'</b>.'});
     while(succ.left!==null){
       sParent = succ; succ = succ.left;
-      g.snap({phase:'succ', compare:[succ.id], say:'Keep going <b>left</b> to <b>'+fmt(succ.key)+'</b> — smaller keys live further left.'});
+      g.snap({phase:'succ', compare:[succ.id], say:'Keep going <b>left</b> to <b>'+fmt(succ.key)+'</b>, since smaller keys live further left.'});
     }
     g.snap({phase:'succ', active:[succ.id], say:'The leftmost node, <b>'+fmt(succ.key)+'</b>, is the successor (smallest key bigger than '+fmt(key)+').'});
     const oldKey = curr.key; curr.key = succ.key;
@@ -3758,7 +3758,7 @@ function genTreeRemove(key){
     g.snap({phase:'splice', ghost:[succ.id], say:'Now delete the original successor node. It has no left child, so splice in its right child (or null).'});
     const sChild = succ.right; relink(sParent, succ, sChild); g.cost.links++;
     g.snap({phase:'splice', active:sChild?[sChild.id]:[], lit:'L',
-      say:'Successor unlinked — its parent now points to '+(sChild?('<b>'+fmt(sChild.key)+'</b>'):'<b>null</b>')+'.'});
+      say:'Successor unlinked, and its parent now points to '+(sChild?('<b>'+fmt(sChild.key)+'</b>'):'<b>null</b>')+'.'});
   } else {
     const child = curr.left!==null ? curr.left : curr.right;
     if(child===null){
@@ -3781,7 +3781,7 @@ function genTreeSize(){
   const n = bstCount(g.root);
   g.snap({phase:'read', say:'<b>size()</b> returns the stored node count: <b>'+n+'</b>. insert and remove keep that field current, so no traversal is needed.'});
   return {frames:g.frames, final:modelTree, code:'size', row:'bo-tsize', label:'size()',
-    bigO:'size reads a stored counter — no walk. <code>O(1)</code>.'};
+    bigO:'size reads a stored counter, no walk. <code>O(1)</code>.'};
 }
 function genTreeClear(){
   const g = newTree(modelTree);
@@ -3794,7 +3794,7 @@ function genTreeClear(){
     g.snap({phase:'clear', say:'The tree is now empty.'});
   }
   return {frames:g.frames, final:g.final(), code:'clear', row:'bo-tclear', label:'clear()',
-    bigO:'clear just nulls the root link. <code>O(1)</code> — the unreachable nodes become garbage.'};
+    bigO:'clear just nulls the root link. <code>O(1)</code>. The unreachable nodes become garbage.'};
 }
 
 /* ---- render: object card + SVG tree laid out by in-order rank ---- */
@@ -3870,7 +3870,7 @@ function genTreeBuildResult(tokens){
   const initModel = {root:null};
   const allocFrame = {kind:'tree', root:null, size:0, active:[], compare:[], fresh:null, ghost:[],
     phase:null, cost:{compares:0,links:0},
-    say:'<b>new MyBST()</b>: an empty tree — <b>root = null</b>, size = 0. Then insert each key.'};
+    say:'<b>new MyBST()</b>: an empty tree with <b>root = null</b>, size = 0. Then insert each key.'};
   return chainBuild({
     getModel:()=>modelTree, setModel:m=>{modelTree=m;}, initModel, allocFrame, values:keys,
     stepGen:k=>genTreeInsert(k),
@@ -3989,7 +3989,7 @@ const CX_HSET =
   '<tr id="bo-hssize"><td class="opname">size()</td><td class="bigo">O(1)</td><td class="why">Reads the underlying map’s size.</td></tr>'+
   '<tr id="bo-hsisempty"><td class="opname">isEmpty()</td><td class="bigo">O(1)</td><td class="why">Reads the stored size field.</td></tr>'+
   '<tr id="bo-hsclear"><td class="opname">clear()</td><td class="bigo">O(capacity)</td><td class="why">Nulls every bucket.</td></tr>';
-const CXP_HASH = 'Big-O here is the <b>average</b> case. With a good hash function the entries spread evenly, so each bucket holds about <code>n / capacity</code> nodes — a small constant kept that way by resizing at 80% load. So <b>put</b>, <b>get</b>, and <b>remove</b> average <code>O(1)</code>.<br><b>Worst case</b> is <code>O(n)</code>: if every key collides into one bucket, the chain is just a linked list and you scan all <code>n</code>.<br><b>*amortized</b>: a <code>put</code> that triggers a resize rehashes all <code>n</code> entries, but averaged over many puts that is still <code>O(1)</code>.';
+const CXP_HASH = 'Big-O here is the <b>average</b> case. With a good hash function the entries spread evenly, so each bucket holds about <code>n / capacity</code> nodes, a small constant kept that way by resizing at 80% load. So <b>put</b>, <b>get</b>, and <b>remove</b> average <code>O(1)</code>.<br><b>Worst case</b> is <code>O(n)</code>: if every key collides into one bucket, the chain is just a linked list and you scan all <code>n</code>.<br><b>*amortized</b>: a <code>put</code> that triggers a resize rehashes all <code>n</code> entries, but averaged over many puts that is still <code>O(1)</code>.';
 
 /* ---- frame builder for hashing operations ----
    A frame carries a deep snapshot of the table plus the highlight hints:
@@ -4050,7 +4050,7 @@ function genHput(key, value, isSet){
   const code = isSet ? 'add' : 'put';
   if(key===null || (!isSet && value===null)){
     g.snap({phase:'guard', err:true,
-      say: isSet ? 'add(null) throws <b>NullPointerException</b> — a set never stores null.'
+      say: isSet ? 'add(null) throws <b>NullPointerException</b>, since a set never stores null.'
                  : 'A HashMap stores no null '+(key===null?'keys':'values')+', so this throws <b>NullPointerException</b>. Nothing changes.'});
     return {frames:g.frames, final:modelHash, row, code, label, bigO:null};
   }
@@ -4080,7 +4080,7 @@ function genHput(key, value, isSet){
     if(!isSet){ chain[found].v = value; g.cost.writes++; }
     g.snap({phase:'place', ha:b, act:{b,i:found}, lit: isSet?null:'W',
       say: isSet
-        ? '<b>'+fmt(key)+'</b> is already in the set — nothing is added. <b>add returns false</b>.'
+        ? '<b>'+fmt(key)+'</b> is already in the set, so nothing is added. <b>add returns false</b>.'
         : 'Key already exists: overwrite its value with <b>'+fmt(value)+'</b> and return the old value <b>'+fmt(old)+'</b>. Size is unchanged.'});
     return {frames:g.frames, final:g.final(), row, code, label, bigO:HBIGO_PUT(isSet)};
   }
@@ -4102,14 +4102,14 @@ function genHget(key, isSet){
   const code = isSet ? 'contains' : 'get';
   if(key===null){
     g.snap({phase:'guard', err:true,
-      say:(isSet?'contains(null)':'get(null)')+' throws <b>NullPointerException</b> — keys/elements are never null.'});
+      say:(isSet?'contains(null)':'get(null)')+' throws <b>NullPointerException</b>, since keys/elements are never null.'});
     return {frames:g.frames, final:modelHash, row, code, label, bigO:null};
   }
   g.snap({phase:'guard', say:fmt(key)+' is non-null, so the lookup proceeds.'});
 
   const cap = g.table.length, code32 = javaHashCode(key), masked = code32 & 0x7fffffff, b = masked % cap;
   g.snap({phase:'hash', ha:b, calc:{key, code:code32, masked, cap, hash:b},
-    say:'getHash('+fmt(key)+') = <b>'+b+'</b>. Only bucket '+b+'’s chain has to be searched — not the whole table.'});
+    say:'getHash('+fmt(key)+') = <b>'+b+'</b>. Only bucket '+b+'’s chain has to be searched, not the whole table.'});
 
   const chain = g.table[b];
   let found = -1;
@@ -4139,7 +4139,7 @@ function genHremove(key, isSet){
   const code = 'remove';
   if(key===null){
     g.snap({phase:'guard', err:true,
-      say:'remove(null) throws <b>NullPointerException</b> — keys/elements are never null.'});
+      say:'remove(null) throws <b>NullPointerException</b>, since keys/elements are never null.'});
     return {frames:g.frames, final:modelHash, row, code, label, bigO:null};
   }
   g.snap({phase:'guard', say:fmt(key)+' is non-null, so the removal proceeds.'});
@@ -4205,10 +4205,10 @@ function genHgetCapacity(){
 
 function HBIGO_PUT(isSet){
   const name = isSet ? 'add' : 'put';
-  return 'With entries spread across buckets, '+name+' hashes to one bucket and walks a short chain, so it averages <code>O(1)</code>. The worst case (every key in one bucket) walks all <code>n</code> — <code>O(n)</code>. A resize that doubles the table rehashes all <code>n</code> entries, but amortized over many '+name+'s it is still <code>O(1)</code>.';
+  return 'With entries spread across buckets, '+name+' hashes to one bucket and walks a short chain, so it averages <code>O(1)</code>. The worst case (every key in one bucket) walks all <code>n</code>, so <code>O(n)</code>. A resize that doubles the table rehashes all <code>n</code> entries, but amortized over many '+name+'s it is still <code>O(1)</code>.';
 }
 function HBIGO_GET(isSet){
-  return 'Hashing jumps straight to one bucket and scans only that chain. Spread evenly the chain is a small constant, so this averages <code>O(1)</code>; if every key collides into one bucket it degrades to scanning all <code>n</code> — <code>O(n)</code>.';
+  return 'Hashing jumps straight to one bucket and scans only that chain. Spread evenly the chain is a small constant, so this averages <code>O(1)</code>; if every key collides into one bucket it degrades to scanning all <code>n</code>, so <code>O(n)</code>.';
 }
 
 /* ---- silent put + expand, used to construct a starting table ---- */
@@ -4378,7 +4378,7 @@ function setHashMode(mode){
   document.getElementById('cxbody').innerHTML = isSet ? CX_HSET : CX_HMAP;
   document.getElementById('cxprimer').innerHTML = CXP_HASH;
   document.getElementById('hashmodeHint').innerHTML = isSet
-    ? 'a set is a map whose values are one shared placeholder — so we show keys only'
+    ? 'a set is a map whose values are one shared placeholder, so we show keys only'
     : 'keys map to values; keys that collide chain inside a bucket';
   setCostLabels(false);
   // the HashMap/HashSet choice changes which constructors are offered
