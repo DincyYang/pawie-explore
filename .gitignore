@@ -1,0 +1,21 @@
+# Secrets — never commit an API key
+.env
+.env.*
+*.key
+.claude/settings.local.json
+
+# Course materials: assignment write-ups, solutions, teaching notes.
+# Supply your own locally; they must not be redistributed.
+course-context/
+PA/
+Materials/
+
+# Dependencies
+node_modules/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
