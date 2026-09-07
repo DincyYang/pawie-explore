@@ -1,0 +1,44 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  oracle:
+    name: reference implementations and differential tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The JUnit suite holds the reference implementations to java.util
+      # semantics. If these fail, the oracle itself is wrong and nothing
+      # downstream of it means anything, so it runs first.
+      - name: JUnit suite (Java reference implementations)
+        run: ./oracle/java/run-tests.sh
+
+      # The differential and property suites replay the same operation
+      # sequences through the visualizer's step engine and compare every state
+      # and every cost counter against the reference.
+      - name: Differential and property suites (visualizer step engine)
+        run: node --test oracle/js/*.test.mjs
+
+      # A wider sweep of random sequences than the default, so a rare
+      # divergence has a chance to show up before it reaches a student.
+      - name: Extended randomized sweep
+        run: node --test oracle/js/*.test.mjs
+        env:
+          PAWIE_SEQUENCES: '400'
+          PAWIE_SEQUENCE_LENGTH: '40'

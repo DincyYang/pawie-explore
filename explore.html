@@ -1013,7 +1013,7 @@ function genAdd(index, value, isAppend){
     say:'<b>shiftRight('+index+')</b>: scan from the back, copying each slot from its left neighbor. A copy overwrites the target but leaves the source as-is.'});
   let staleAt = -1;
   for(let i=g.data.length-1; i>index; i--){
-    if(g.data[i-1]===null){           // empty source: the copy is a no-op
+    if(i-1 >= g.size){                // source is past the end: the copy is a no-op
       g.data[i] = g.data[i-1]; g.cost.writes++;
       continue;                        // counted, but nothing visible to show
     }
@@ -1071,7 +1071,7 @@ function genRemove(index){
     say:'<b>shiftLeft('+index+')</b>: copy each slot from its right neighbor, scanning forward. The first copy overwrites the value being removed.'});
   let staleAt = -1;
   for(let i=index+1; i<g.data.length; i++){
-    if(g.data[i]===null){            // empty source
+    if(i >= g.size){                 // source is past the end
       g.data[i-1] = g.data[i]; g.cost.writes++;
       const wasStale = (staleAt===i-1), wasRemoved = (i-1===index && staleAt===-1);
       if(wasStale || wasRemoved){
@@ -2047,7 +2047,11 @@ function genItSet(value){
     return {frames:g.frames, finalIter:modelIter, code:'itset', row:'bo-itset', label:'set('+fmt(value)+')', bigO:null};
   }
   const target = modelIter.forward ? idx-1 : idx;   // forward → left; backward → right
-  const old = g.vals[target]; g.vals[target] = value; g.cost.links++;
+  const old = g.vals[target];
+  // show the node about to change first, so the value being replaced is visible
+  g.snap({phase:'write', cursor:idx, flags:{[target]:'itlook'}, itstate:st0,
+    say:'The last <b>'+(modelIter.forward?'next()':'previous()')+'</b> returned the node at index <b>'+target+'</b>, holding <b>'+fmt(old)+'</b>. That is the node <b>set</b> overwrites.'});
+  g.vals[target] = value; g.cost.links++;
   g.snap({phase:'write', cursor:idx, flags:{[target]:'itret'}, lit:'L', itstate:st0,
     say:'<b>set('+fmt(value)+')</b> overwrites the value in the node the last <b>'+(modelIter.forward?'next()':'previous()')+'</b> returned, index <b>'+target+'</b>: <b>'+fmt(old)+' &rarr; '+fmt(value)+'</b>. The links do not change. <b>O(1)</b>.'});
   return {frames:g.frames, finalIter:itFinal(g, idx, modelIter.forward, modelIter.canSet), code:'itset', row:'bo-itset', label:'set('+fmt(value)+')',

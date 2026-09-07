@@ -13,6 +13,11 @@ Materials/
 # Dependencies
 node_modules/
 
+# Test build output
+oracle/java/out/
+oracle/java/test-out/
+*.class
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

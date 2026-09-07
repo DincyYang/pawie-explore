@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Pawie Explore — an interactive data-structure visualizer with a Claude-powered tutor mascot.",
+  "description": "Pawie Explore: an interactive data-structure visualizer with a Claude-powered tutor mascot.",
   "scripts": {
     "start": "node server.js",
-    "serve": "python3 -m http.server 8123"
+    "serve": "python3 -m http.server 8123",
+    "test": "npm run test:java && npm run test:js",
+    "test:java": "./oracle/java/run-tests.sh",
+    "test:js": "node --test oracle/js/*.test.mjs",
+    "test:soak": "PAWIE_SEQUENCES=400 PAWIE_SEQUENCE_LENGTH=40 node --test oracle/js/*.test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.69.0"

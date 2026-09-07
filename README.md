@@ -5,9 +5,9 @@ data-structures course, with **Pawie**, a pixel-bear tutor powered by the
 Claude API, living in the corner of the page.
 
 Every operation is animated step by step: you watch indices move, pointers
-rewire, capacity double, and the cost of each step accumulate. No Java source
-is shown; the narration is plain English, so the focus stays on *what the
-structure does*, not on reading code.
+rewire, capacity double, and the cost of each step accumulate. The visualizer
+never shows Java source; the narration is plain English, so the focus stays on
+*what the structure does*, not on reading code.
 
 **Open `explore.html` in a browser and it just runs**: no server, no API key,
 no build step. The Claude-powered chat is an optional extra on top.
@@ -33,6 +33,41 @@ The page sends the current structure and the conversation so far to a small
 local proxy (`server.js`), which calls Claude with a system prompt grounded in
 that structure's course material. Pawie also tells jokes, cheers you on, and
 quizzes you, and that content is curated in `pawie-content.js`, no model involved.
+
+## Is the animation telling the truth?
+
+Every frame the visualizer draws is a claim about what a real implementation
+would do at that moment. `oracle/` is what checks those claims.
+
+A reference implementation of each structure lives in `oracle/java`, written
+plainly and instrumented to record its own state after every field mutation,
+along with the work it did: array writes, elements shifted, resize copies,
+hops, pointer writes, comparisons, swaps, chain probes, rehashes. A JUnit suite
+holds those references to `java.util` semantics, so they are worth trusting.
+
+`oracle/js` then loads the step engine straight out of `explore.html`, replays
+the same randomized operation sequences through it, and compares every state
+and every counter against the reference. On top of that, property tests hold
+the engine to things that must be true on their own terms: the structure is
+still well formed after every operation, the first frame shows the state the
+operation began in and the last frame shows the state the page commits, a
+refused call changes nothing, and stepping backwards shows what it showed on
+the way forward.
+
+```bash
+npm test           # 100 JUnit tests, then 54 differential and property tests
+npm run test:soak  # a much wider sweep of random sequences
+```
+
+No build tool and nothing to install: a JDK, Node, and the two JUnit jars
+vendored in `oracle/java/lib` are the whole toolchain, which is what
+[the workflow](.github/workflows/tests.yml) uses too. `oracle/README.md`
+explains the comparison in detail, including the two defects it found.
+
+The Java in `oracle/` is test scaffolding, not teaching material and not an
+answer key: it is deliberately shaped around snapshotting and counting rather
+than around any assignment's API, and none of it is ever shown in the
+visualizer or by Pawie.
 
 ## Running it
 
@@ -98,6 +133,8 @@ works and answers from general data-structures knowledge.
 explore.html       the whole visualizer: structures, animation, transport, Pawie UI
 pawie-content.js   curated jokes, cheers and quiz banks (edit copy here)
 server.js          local proxy to the Claude API; the only place the key lives
+oracle/java        reference implementations plus the JUnit suite that checks them
+oracle/js          replays explore.html's step engine and diffs it against those
 ```
 
 ## Notes
@@ -105,3 +142,5 @@ server.js          local proxy to the Claude API; the only place the key lives
 - The key is read from the environment and stays on the server. Never paste it
   into a file you might commit.
 - Pawie is told never to write a full solution to a graded assignment.
+- Course write-ups, solutions and teaching notes are gitignored and are not
+  part of this repository.
